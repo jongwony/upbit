@@ -117,13 +117,18 @@ class Orders:
         }
 
 
-class Withdraws:
+class Withdraw:
+    """
+    출금
+    """
+
     @staticmethod
-    def orders(currency: str = None, state: str = None, uuids: list = None, txids: list = None, limit: int = None,
-               page: int = None, order_by: str = None):
+    @upbit_qs
+    def withdraws(currency: str = None, state: str = None, uuids: list = None, txids: list = None, limit: int = None,
+                  page: int = None, order_by: str = None):
         """
-        주문 리스트를 조회한다.
-        https://docs.upbit.com/reference#%EC%A3%BC%EB%AC%B8-%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EC%A1%B0%ED%9A%8C
+        출금 리스트를 조회한다.
+        https://docs.upbit.com/reference#%EC%A0%84%EC%B2%B4-%EC%B6%9C%EA%B8%88-%EC%A1%B0%ED%9A%8C
 
         :param currency: Currency 코드
         :param state: 출금 상태
@@ -141,4 +146,177 @@ class Withdraws:
         return {
             'method': 'get',
             'path': '/v1/withdraws'
+        }
+
+    @staticmethod
+    @upbit_qs
+    def withdraw(uuid: str = None, txid: str = None, currency: str = None):
+        """
+        출금 UUID를 통해 개별 출금 정보를 조회한다.
+        https://docs.upbit.com/reference#%EA%B0%9C%EB%B3%84-%EC%B6%9C%EA%B8%88-%EC%A1%B0%ED%9A%8C
+
+        :param uuid: 출금 UUID
+        :param txid: 출금 TXID
+        :param currency: Currency 코드
+        """
+        return {
+            'method': 'get',
+            'path': '/v1/withdraw'
+        }
+
+    @staticmethod
+    @upbit_qs
+    def chance(currency: str):
+        """
+        해당 통화의 가능한 출금 정보를 확인한다.
+        https://docs.upbit.com/reference#%EC%B6%9C%EA%B8%88-%EA%B0%80%EB%8A%A5-%EC%A0%95%EB%B3%B4
+
+        :param currency: Currency 코드 (BTC ...)
+        """
+        return {
+            'method': 'get',
+            'path': '/v1/withdraws/chance'
+        }
+
+    @staticmethod
+    @upbit_qs
+    def withdraws_coin(currency: str, amount: str, address: str,
+                       secondary_address: str = None, transaction_type: str = None):
+        """
+        코인 출금을 요청한다.
+        https://docs.upbit.com/reference#%EC%BD%94%EC%9D%B8-%EC%B6%9C%EA%B8%88%ED%95%98%EA%B8%B0
+
+        :param currency: Currency 코드 (BTC ...)
+        :param amount: 출금 코인 수량
+        :param address: 출금 지갑 주소
+        :param secondary_address: 2차 출금주소 (필요한 코인에 한해서)
+        :param transaction_type: 출금 유형
+        """
+        return {
+            'method': 'post',
+            'path': '/v1/withdraws/coin',
+        }
+
+    @staticmethod
+    @upbit_qs
+    def withdraws_krw(amount: str):
+        """
+        원화 출금을 요청한다. 등록된 출금 계좌로 출금된다.
+        https://docs.upbit.com/reference#%EC%9B%90%ED%99%94-%EC%B6%9C%EA%B8%88%ED%95%98%EA%B8%B0
+
+        :param amount: 출금 원화 수량
+        """
+        return {
+            'method': 'post',
+            'path': '/v1/withdraws/krw',
+        }
+
+
+class Deposits:
+    """
+    입금
+    """
+
+    @staticmethod
+    @upbit_qs
+    def deposits(currency: str = None, state: str = None, uuids: list = None, txids: list = None,
+                 limit: int = None, page: int = None, order_by: str = None):
+        """
+        https://docs.upbit.com/reference#%EC%9E%85%EA%B8%88-%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EC%A1%B0%ED%9A%8C
+
+        :param currency: Currency 코드
+        :param state: 입금 상태
+        :param uuids: 입금 UUID의 목록
+        :param txids: 입금 TXID의 목록
+        :param limit: 페이지당 개수
+        :param page: 페이지 번호
+        :param order_by: 정렬 방식
+        """
+        return {
+            'method': 'get',
+            'path': '/v1/deposits',
+        }
+
+    @staticmethod
+    @upbit_qs
+    def deposit(uuid: str = None, txid: str = None, currency: str = None):
+        """
+        https://docs.upbit.com/reference#%EA%B0%9C%EB%B3%84-%EC%9E%85%EA%B8%88-%EC%A1%B0%ED%9A%8C
+
+        :param uuid: 개별 입금의 UUID
+        :param txid: 개별 입금의 TXID
+        :param currency: Currency 코드
+        """
+        return {
+            'method': 'get',
+            'path': '/v1/deposit',
+        }
+
+    @staticmethod
+    @upbit_qs
+    def generate_coin_address(currency: str):
+        """
+        입금 주소 생성을 요청한다.
+        https://docs.upbit.com/reference#%EC%9E%85%EA%B8%88-%EC%A3%BC%EC%86%8C-%EC%83%9D%EC%84%B1-%EC%9A%94%EC%B2%AD
+
+        :param currency: Currency 코드
+        """
+        return {
+            'method': 'post',
+            'path': '/v1/deposits/generate_coin_address',
+        }
+
+    @staticmethod
+    @upbit_qs
+    def coin_addresses():
+        """
+        내가 보유한 자산 리스트를 보여줍니다.
+        https://docs.upbit.com/reference#%EC%A0%84%EC%B2%B4-%EC%9E%85%EA%B8%88-%EC%A3%BC%EC%86%8C-%EC%A1%B0%ED%9A%8C
+        """
+        return {
+            'method': 'get',
+            'path': '/v1/deposits/coin_addresses',
+        }
+
+    @staticmethod
+    @upbit_qs
+    def coin_address(currency: str):
+        """
+        https://docs.upbit.com/reference#%EA%B0%9C%EB%B3%84-%EC%9E%85%EA%B8%88-%EC%A4%8F-%EC%A1%B0%ED%9A%8C
+
+        :param currency: Currency symbol
+        """
+        return {
+            'method': 'get',
+            'path': '/v1/deposits/coin_address',
+        }
+
+
+class Status:
+    """
+    서비스 정보
+    """
+
+    @staticmethod
+    @upbit_qs
+    def wallet():
+        """
+        입출금 현황 및 블록 상태를 조회합니다.
+        https://docs.upbit.com/reference#%EC%9E%85%EC%B6%9C%EA%B8%88-%ED%98%84%ED%99%A9
+        """
+        return {
+            'method': 'get',
+            'path': '/v1/status/wallet'
+        }
+
+    @staticmethod
+    @upbit_qs
+    def api_keys():
+        """
+        API 키 목록 및 만료 일자를 조회합니다.
+        https://docs.upbit.com/reference#open-api-%ED%82%A4-%EB%A6%AC%EC%8A%A4%ED%8A%B8-%EC%A1%B0%ED%9A%8C
+        """
+        return {
+            'method': 'get',
+            'path': '/v1/api_keys'
         }
